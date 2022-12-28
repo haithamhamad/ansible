@@ -1,4 +1,4 @@
----
+--- yaml
 # tasks file for agent 
 
 
@@ -13,27 +13,10 @@
       - name: edit parameters
         lineinfile:
           path: /etc/zabbix/zabbix_agentd.conf
-          regexp: "Server=127.0.0.1"
-          line: "Server=10.0.2.11"
+          regexp: {{ item.key }}
+          line: {{ item.value }}
           state: present
-
-
-      - name: edit parameters
-        lineinfile:
-          path: /etc/zabbix/zabbix_agentd.conf
-          regexp: "ServerActive=127.0.0.1"
-          line: "ServerActive=10.0.2.11"
-          state: present
-       
-
-      - name: edit parameters
-        lineinfile:
-          path: /etc/zabbix/zabbix_agentd.conf
-          regexp: "Hostname=Zabbix server"
-          line: "Hostname=ancible"
-          state: present
-      
-
+        with_items: '{{ agentconf }}'
 
       - name: start zabbix agent
         systemd:
