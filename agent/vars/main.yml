@@ -1,2 +1,9 @@
 ---
 # vars file for agent
+
+ agentconf:
+   - "Server=127.0.0.1" : "Server=10.0.2.11"
+   - "ServerActive=127.0.0.1" : "ServerActive=10.0.2.11"
+   - "Hostname=Zabbix server" :  "Hostname=ancible"
+
+
