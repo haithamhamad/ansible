@@ -128,7 +128,7 @@
           path:  /etc/zabbix/zabbix_server.conf
           regexp: {{ item.key }} 
           line: {{ item.value }}
-        with_items: {{ zabbixconf }}
+        with_items: '{{ zabbixconf }}'
       
 
       - name: restart services
