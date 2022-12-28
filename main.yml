@@ -1,4 +1,7 @@
-  - name: local task
+--- yaml
+ 
+ 
+ - name: local task
     hosts: local
     become: yes
     roles:
@@ -11,13 +14,11 @@
 
   - name: server task
     hosts: server1
-    become: yes
     roles:
       - server
 
   - name: agent task
     hosts: agent1
-    become: yes
     roles:
       - agent
 
