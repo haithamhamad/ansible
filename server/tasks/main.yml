@@ -1,0 +1,182 @@
+---
+# tasks file for server
+
+      - name: Disable SELinux
+        ansible.posix.selinux:
+           state: disabled
+       
+      - name: install remi packages
+        yum:
+          name:
+             -  epel-release
+             - http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+       
+
+
+      - name: install php
+        yum:
+         name:
+          - httpd
+          - php
+          - php-pear
+          - php-cgi
+          - php-common
+          - php-mbstring
+          - php-snmp
+          - php-gd
+          - php-pecl-mysql
+          - php-xml
+          - php-mysql
+          - php-gettext
+          - php-bcmath
+         enablerepo: remi-php72
+       
+
+      - name: Enable service httpd and ensure it is not masked
+        systemd:
+          name: httpd
+          state: started
+          enabled: yes
+      
+
+      - name: Install zabbix on server machine
+        yum:
+          name:
+            - zabbix
+            - zabbix-server-mysql
+            - zabbix-web-mysql
+          enablerepo: zabbix-local
+          state: present
+      
+      - name: add my time zone to php conf
+        lineinfile:
+          path: /etc/php.ini
+          regexp: ";date.timezone =  "
+          line: " date.timezone =  Asia/Jerusalem "
+          state: present
+      
+      - name: install mariadb
+        yum:
+          name: mariadb-server
+          enablerepo: remi
+
+      - name: start mariadb
+        systemd:
+          name: mariadb
+          enabled: yes
+          state: started
+
+
+      - name: Allow ports
+        ansible.builtin.iptables:
+          chain: INPUT
+          protocol: tcp
+          destination_port: '{{ item }}'
+          ctstate: NEW
+          jump: ACCEPT
+        with_items:
+          - 80
+          - 443
+          - 10051
+          - 10050
+
+
+
+
+      - name: create database
+        mysql_db:
+            name: zabbixdb
+            state: present
+            encoding: utf8
+
+
+      - name: create db user
+        mysql_user:
+           name: zabbix
+           password: 12345Hh@
+           host: localhost
+           priv: '*.*:ALL'
+           state: present
+      
+
+      - name: import schema
+        shell: ' zcat /usr/share/doc/zabbix-server-mysql-4.4.10/create.sql.gz | mysql -u zabbix -p12345Hh@ zabbixdb'
+      
+
+  
+
+
+      - name: start zabbix proxy
+        systemd:
+            name: zabbix-proxy
+            state: started
+            enabled: yes
+     
+     
+
+      - name: add my  time zone to php conf
+        lineinfile:
+          path: /etc/httpd/conf.d/zabbix.conf
+          regexp: "# php_value date.timezone Europe/Riga "
+          line: "php_value date.timezone Asia/Jerusalem "
+          state: present
+       
+
+
+      - name: edit parameters
+        lineinfile:
+          path:  /etc/zabbix/zabbix_server.conf
+          regexp: '^DBHost='
+          line: DBHost=localhost
+       
+
+      - name: edit parameters
+        lineinfile:
+          path:  /etc/zabbix/zabbix_server.conf
+          regexp: '^DBName='
+          line: DBName=zabbixdb
+       
+
+      - name: edit parameters
+        lineinfile:
+          path:  /etc/zabbix/zabbix_server.conf
+          regexp: '^DBUser='
+          line: DBUser=zabbix
+       
+
+
+      - name: edit parameters
+        lineinfile:
+          path: /etc/zabbix/zabbix_server.conf
+          regexp: '^DBPassword='
+          line: DBPassword=12345Hh@
+       
+
+
+      - name: restart services
+        systemd:
+          state: restarted
+          name: '{{ item }}'
+        with_items:
+          - zabbix-server.service
+          - httpd
+          - mariadb
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

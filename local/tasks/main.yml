@@ -1,0 +1,45 @@
+---
+# tasks file for local 
+      - name: install create repo
+        yum:
+         name:
+          - httpd
+          - createrepo
+          - yum-utils
+         state: present
+       
+      - name: Disable SELinux
+        ansible.posix.selinux:
+           state: disabled
+      
+
+      - name: Make sure a service unit is running and enable
+        systemd:
+          state: started
+          enabled: yes
+          name: httpd
+ 
+      - name: download zabbix
+        yum:
+           name: zabbix
+           state: present
+           download_only: true
+           download_dir: /var/www/html/zabbix1
+
+      - name: create repo
+        command: createrepo /var/www/html/zabbix1
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+

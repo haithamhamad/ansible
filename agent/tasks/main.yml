@@ -1,0 +1,60 @@
+---
+# tasks file for agent 
+
+
+      - name: Install zabbix on client machine
+        yum:
+          name:
+            - zabbix
+            - zabbix-agent
+          enablerepo: zabbix-local
+          state: present
+
+      - name: edit parameters
+        lineinfile:
+          path: /etc/zabbix/zabbix_agentd.conf
+          regexp: "Server=127.0.0.1"
+          line: "Server=10.0.2.11"
+          state: present
+
+
+      - name: edit parameters
+        lineinfile:
+          path: /etc/zabbix/zabbix_agentd.conf
+          regexp: "ServerActive=127.0.0.1"
+          line: "ServerActive=10.0.2.11"
+          state: present
+       
+
+      - name: edit parameters
+        lineinfile:
+          path: /etc/zabbix/zabbix_agentd.conf
+          regexp: "Hostname=Zabbix server"
+          line: "Hostname=ancible"
+          state: present
+      
+
+
+      - name: start zabbix agent
+        systemd:
+          state: started
+          enabled: yes
+          name: zabbix-agent
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

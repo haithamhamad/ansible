@@ -1,0 +1,12 @@
+[zabbix-agent]
+agent1 ansible_host=10.0.2.12 ansible_ssh_pass=osboxes.org
+
+
+[zabbix-server]
+server1 ansible_host=10.0.2.11 ansible_ssh_pass=osboxes.org
+
+
+[local]
+local ansible_host=10.0.2.10 ansible_ssh_pass=osboxes.org
+
+

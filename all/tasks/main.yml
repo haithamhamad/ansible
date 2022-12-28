@@ -1,0 +1,18 @@
+---
+# tasks file for all
+
+      - name: add repo to the machines
+        yum_repository:
+           name: zabbix-local
+           description: zabbix repo
+           baseurl: http://10.0.2.10:80/zabbix1
+           enabled: yes
+           gpgcheck: no
+
+
+
+
+
+
+
+
