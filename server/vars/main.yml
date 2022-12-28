@@ -1,2 +1,11 @@
 ---
 # vars file for server
+
+ zabbixconf:
+   - '^DBHost=' : DBHost=localhost
+   - '^DBName=' : DBName=zabbixdb
+   - '^DBUser=' : DBUser=zabbix
+   - '^DBPassword=' : DBPassword=12345Hh@
+
+
+
