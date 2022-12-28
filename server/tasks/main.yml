@@ -1,4 +1,4 @@
----
+--- yaml
 # tasks file for server
 
       - name: Disable SELinux
@@ -114,7 +114,7 @@
      
      
 
-      - name: add my  time zone to php conf
+      - name: add my  time zone to zabbix conf
         lineinfile:
           path: /etc/httpd/conf.d/zabbix.conf
           regexp: "# php_value date.timezone Europe/Riga "
@@ -126,32 +126,10 @@
       - name: edit parameters
         lineinfile:
           path:  /etc/zabbix/zabbix_server.conf
-          regexp: '^DBHost='
-          line: DBHost=localhost
-       
-
-      - name: edit parameters
-        lineinfile:
-          path:  /etc/zabbix/zabbix_server.conf
-          regexp: '^DBName='
-          line: DBName=zabbixdb
-       
-
-      - name: edit parameters
-        lineinfile:
-          path:  /etc/zabbix/zabbix_server.conf
-          regexp: '^DBUser='
-          line: DBUser=zabbix
-       
-
-
-      - name: edit parameters
-        lineinfile:
-          path: /etc/zabbix/zabbix_server.conf
-          regexp: '^DBPassword='
-          line: DBPassword=12345Hh@
-       
-
+          regexp: {{ item.key }} 
+          line: {{ item.value }}
+        with_items: {{ zabbixconf }}
+      
 
       - name: restart services
         systemd:
